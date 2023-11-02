@@ -1,0 +1,1 @@
+Sentiment based music composer is a Machine Learning based project built by using mediapipe, keras, opencv and streamlit. Streamlit is used to create a webapplication for capturing the webcam in the browser and this can be done using streamlit-webrtc module.
