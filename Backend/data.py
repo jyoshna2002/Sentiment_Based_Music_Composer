@@ -1,16 +1,12 @@
 import mediapipe as mp
 import numpy as np
 import cv2
-
 capture = cv2.VideoCapture(0)
-
-name = input("Enter the name of the data : ")
-
+emotionname = input("Enter the name of the emotion : ")
 holistic = mp.solutions.holistic
 hands = mp.solutions.hands
 holis = holistic.Holistic()
 drawing = mp.solutions.drawing_utils
-
 X = []
 data_size = 0
 
@@ -60,5 +56,5 @@ while True:
         capture.release()
         break
 
-np.save(f"{name}.npy", np.array(X))
+np.save(f"{emotionname}.npy", np.array(X))
 print(np.array(X).shape)
