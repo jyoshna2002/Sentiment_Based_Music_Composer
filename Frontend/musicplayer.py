@@ -8,6 +8,7 @@ import mediapipe as mp
 from keras.models import load_model
 import cv2
 
+
 import hashlib
 def make_hashes(password):
 	return hashlib.sha256(str.encode(password)).hexdigest()
@@ -44,16 +45,21 @@ def view_all_users():
 
 def main():
 
+
 	st.title("Sentiment Based music composer")
 
 	menu = ["Home","Login","SignUp"]
 	choice = st.sidebar.selectbox("Menu",menu)
 
 	if choice == "Home":
+
+		st.image("wal.jpg",width = 400)
 		st.subheader("Home")
 
 	elif choice == "Login":
-		st.subheader("Login Section")
+		st.subheader("Login and select your interest")
+		st.image("wal1.jpg", width=500)
+
 
 		username = st.sidebar.text_input("User Name")
 		password = st.sidebar.text_input("Password",type='password')
@@ -142,44 +148,45 @@ def main():
 							np.save("emotion.npy", np.array([""]))
 							st.session_state["run"] = "false"
 
-				#elif task == "By mentioning emotion":
-					#language = st.text_input("Preferrable Language")
-					#artist = st.text_input("Favourite artist")
-					#feeling = st.text_input("How are you feeling today")
-					#butn = st.button("Relatable songs")
-					#if butn:
-						#if not (feeling):
-							#st.warning("Enter emotion first")
-							#st.session_state["run"] = "true"
-						#if not(language):
-							#st.warning("Enter language first")
-							#st.session_state["run"] = "true"
-						#if not(artist):
-							#st.warning("Enter artist name first")
-							#st.session_state["run"] = "true"
-						#else:
-							#webbrowser.open(f"https://www.youtube.com/results?search_query={language}+{feeling}+songs+by+{artist}")
+				elif task == "By mentioning emotion":
+					language = st.text_input("Preferrable Language")
+					artist = st.text_input("Favourite artist")
+					feeling = st.text_input("How are you feeling today")
+					butn = st.button("Relatable songs")
+					if butn:
+						if not (feeling):
+							st.warning("Enter emotion first")
+							st.session_state["run"] = "true"
+						if not(language):
+							st.warning("Enter language first")
+							st.session_state["run"] = "true"
+						if not(artist):
+							st.warning("Enter artist name first")
+							st.session_state["run"] = "true"
+						else:
+							webbrowser.open(f"https://www.youtube.com/results?search_query={language}+{feeling}+songs+by+{artist}")
 
 
 
 
 			else:
-				st.warning("Incorrect Username/Password")
+				st.sidebar.warning("Incorrect Username/Password")
 
 
 
 
 
 	elif choice == "SignUp":
-		st.subheader("Create New Account")
-		new_user = st.text_input("Username")
-		new_password = st.text_input("Password",type='password')
+		st.image("wal2.jpg", width=500)
+		st.sidebar.subheader("Create New Account")
+		new_user = st.sidebar.text_input("Username")
+		new_password = st.sidebar.text_input("Password",type='password')
 
-		if st.button("Signup"):
+		if st.sidebar.button("Signup"):
 			create_usertable()
 			add_userdata(new_user,make_hashes(new_password))
-			st.success("You have successfully created a valid Account")
-			st.info("Go to Login Menu to login")
+			st.sidebar.success("You have successfully created a valid Account")
+			st.sidebar.info("Go to Login Menu to login")
 
 
 
