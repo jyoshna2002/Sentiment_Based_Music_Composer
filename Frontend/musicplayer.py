@@ -1,3 +1,5 @@
+import random
+
 import pandas as pd
 import streamlit as st
 from streamlit_webrtc import webrtc_streamer
@@ -7,6 +9,9 @@ import webbrowser
 import mediapipe as mp
 from keras.models import load_model
 import cv2
+import pydub
+from pydub.playback import play
+import pytube
 
 
 import hashlib
@@ -134,39 +139,115 @@ def main():
 							drawing.draw_landmarks(frm, res.right_hand_landmarks, hands.HAND_CONNECTIONS)
 							return av.VideoFrame.from_ndarray(frm, format="bgr24")
 
+					language_artists = {
+						"English": ["Justin Bieber", "Taylor Swift"],
+						"Spanish": ["Shakira", "Enrique Iglesias"],
+						"French": ["Edith Piaf", "Charles Aznavour"],
+						"German": ["Rammstein", "Nena"],
+						"Japanese": ["Hikaru Utada", "Arashi"],
+						"Telugu": ["SP Balasubrahmanyam", "Chitra"],
+						"Hindi": ["Shreya Ghoshal", "Arijit Singh"]
+					}
+					#if st.session_state["run"] != "false":
+					webrtc_streamer(key="yup", desired_playing_state=True,video_processor_factory=SentimentProcessor)
 					language = st.text_input("Preferrable Language")
 					artist = st.text_input("Favourite artist")
-					if language and artist and st.session_state["run"] != "false":
-						webrtc_streamer(key="yup", desired_playing_state=True,video_processor_factory=SentimentProcessor)
-					butnn = st.button("Relatable songs")
-					if butnn:
-						if not (emotion):
-							st.warning("capture your emotion first")
-							st.session_state["run"] = "true"
+					if not language:
+						languages = list(language_artists.keys())
+						language = random.choice(languages)
+						artist = random.choice(language_artists[language])
+					if not artist:
+						if language in language_artists:
+							artist = random.choice(language_artists[language])
 						else:
-							webbrowser.open(f"https://www.youtube.com/results?search_query={language}+{emotion}+songs+by+{artist}")
+							artist = "Unknown Artist"
+					#if language and artist and st.session_state["run"] != "false":
+						#webrtc_streamer(key="yup", desired_playing_state=True,video_processor_factory=SentimentProcessor)
+					butnn = st.button("Relatable songs")
+
+					if butnn:
+						if not emotion:
+							st.warning("Capture your emotion first")
+						else:
+							#webbrowser.open(f"https://www.youtube.com/results?search_query={language}+{emotion}+songs+by+{artist}")
+							query = f"{language} {emotion} songs by {artist}"
+							try:
+								# Search for videos matching the query
+								results = pytube.Search(query).results
+
+								if not results:
+									st.warning("No matching videos found.")
+								else:
+									# Play a random video from the search results
+									random_video = random.choice(results)
+									video_url = f"https://www.youtube.com/watch?v={random_video.video_id}"
+									st.success(f"Now playing: {random_video.title}")
+									webbrowser.open(video_url)
+
+								# You can then use this video URL to embed the video in Streamlit or open it in a web browser
+								# For example:
+								# st.video(video_url)
+								# or
+								# webbrowser.open(video_url)
+							except Exception as e:
+								st.error(f"An error occurred: {e}")
+
 							np.save("emotion.npy", np.array([""]))
 							st.session_state["run"] = "false"
 
 				elif task == "By mentioning emotion":
+					language_artists = {
+						"English": ["Justin Bieber", "Taylor Swift"],
+						"Spanish": ["Shakira", "Enrique Iglesias"],
+						"French": ["Edith Piaf", "Charles Aznavour"],
+						"German": ["Rammstein", "Nena"],
+						"Japanese": ["Hikaru Utada", "Arashi"],
+						"Telugu": ["SP Balasubrahmanyam", "Chitra"],
+						"Hindi": ["Shreya Ghoshal", "Arijit Singh"]
+					}
 					language = st.text_input("Preferrable Language")
+					if not (language):
+						# st.warning("Enter language first")
+						# st.session_state["run"] = "true"
+						languages = list(language_artists.keys())
+						language = random.choice(languages)
+						artist = random.choice(language_artists[language])
 					artist = st.text_input("Favourite artist")
+					if not (artist):
+						# st.warning("Enter artist name first")
+						# st.session_state["run"] = "true"
+						if language in language_artists:
+							artist = random.choice(language_artists[language])
+						else:
+							artist = "Unknown Artist"
 					feeling = st.text_input("How are you feeling today")
 					butn = st.button("Relatable songs")
 					if butn:
 						if not (feeling):
 							st.warning("Enter emotion first")
 							st.session_state["run"] = "true"
-						if not(language):
-							st.warning("Enter language first")
-							st.session_state["run"] = "true"
-						if not(artist):
-							st.warning("Enter artist name first")
-							st.session_state["run"] = "true"
 						else:
-							webbrowser.open(f"https://www.youtube.com/results?search_query={language}+{feeling}+songs+by+{artist}")
+							query = f"{language} {feeling} songs by {artist}"
+							try:
+								# Search for videos matching the query
+								results = pytube.Search(query).results
 
+								if not results:
+									st.warning("No matching videos found.")
+								else:
+									# Play a random video from the search results
+									random_video = random.choice(results)
+									video_url = f"https://www.youtube.com/watch?v={random_video.video_id}"
+									st.success(f"Now playing: {random_video.title}")
+									webbrowser.open(video_url)
 
+								# You can then use this video URL to embed the video in Streamlit or open it in a web browser
+								# For example:
+								# st.video(video_url)
+								# or
+								# webbrowser.open(video_url)
+							except Exception as e:
+								st.error(f"An error occurred: {e}")
 
 
 			else:
