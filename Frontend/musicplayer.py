@@ -13,7 +13,6 @@ import pydub
 from pydub.playback import play
 import pytube
 
-
 import hashlib
 def make_hashes(password):
 	return hashlib.sha256(str.encode(password)).hexdigest()
@@ -180,9 +179,11 @@ def main():
 								else:
 									# Play a random video from the search results
 									random_video = random.choice(results)
-									video_url = f"https://www.youtube.com/watch?v={random_video.video_id}"
+									video_url = f"https://www.youtube.com/watch?v={random_video.video_id}&autoplay=1"
 									st.success(f"Now playing: {random_video.title}")
-									webbrowser.open(video_url)
+									#webbrowser.open(video_url)
+									st.video(video_url)
+
 
 								# You can then use this video URL to embed the video in Streamlit or open it in a web browser
 								# For example:
@@ -237,10 +238,11 @@ def main():
 								else:
 									# Play a random video from the search results
 									random_video = random.choice(results)
-									video_url = f"https://www.youtube.com/watch?v={random_video.video_id}"
+									video_url = f"https://www.youtube.com/watch?v={random_video.video_id}&autoplay=1"
 									st.success(f"Now playing: {random_video.title}")
-									webbrowser.open(video_url)
-
+									#webbrowser.open(video_url)
+									st.video(video_url)
+									
 								# You can then use this video URL to embed the video in Streamlit or open it in a web browser
 								# For example:
 								# st.video(video_url)
